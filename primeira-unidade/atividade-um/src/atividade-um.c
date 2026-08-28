@@ -8,7 +8,7 @@
     
 
     Para compilar:
-        g++ atividade-um.cpp -o builds/atividade
+        gcc -std=c11 -o builds/atividade src/atividade-um.c
         
 
     Para executar (exemplo de arquivo .csv):
@@ -23,11 +23,6 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-void percorrer_linhas();
-void imprimir_discente();
-void salvar();
-void mainProcess();
-
 struct Registros{
     long long int matricula;
     char nome_discente[256];
@@ -38,6 +33,12 @@ struct Registros{
     char nivel_ensino[10];
     char nome_curso[128];
 };
+
+void percorrer_linhas();
+void imprimir_discente(struct Registros* registros, int quantidade, long long int matricula);
+void salvar();
+void mainProcess();
+
 
 
 //Função principal que executa os métodos de leitura e escrita dos dados
@@ -60,7 +61,25 @@ void percorrer_linhas(){
 
 }
 
-void imprimir_discente(){
+void imprimir_discente(struct Registros* registros, int quantidade, long long int matricula){
+    /*
+    função para imprimir os dados do discente no terminal,
+    caso a matricula não seja encontrada, a função deve gerar um erro.
+    */
+
+    for(int i = 0; i < quantidade; i++){
+        if (registros[i].matricula == matricula){ 
+            printf("Discente: %s(%lld)\n", registros[i].nome_discente, registros[i].matricula);
+            printf("Periodo de ingresso: %d/%d\n", registros[i].ano_ingresso, registros[i].periodo_ingresso);
+            printf("Tipo de discente: %s\n", registros[i].tipo_discente);
+            printf("Status do discente: %s\n", registros[i].status_discente);
+            printf("Nivel de ensino: %s\n", registros[i].nivel_ensino);
+            printf("Curso: %s\n", registros[i].nome_curso);
+
+            return;
+        }
+    }
+    printf("Erro: Matrícula não encontrada.\n");
 
 }
 
@@ -68,7 +87,9 @@ void salvar(){
     
 }
 
+/*
 void mainProcess(){
     percorrer_linhas();
     imprimir_discente();
 }
+*/
