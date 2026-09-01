@@ -15,60 +15,80 @@
         builds/atividade input/dis-csv-discentes-de-graduacao-de-2026.csv
 
 
+    Uso da inteligência artificial:
+        Para este projeto, o uso da IA limitou-se à revisão, correção ortográfica de comentários, organização, planejamento do projeto e esclarecimento de dúvidas ao decorrer do desenvolvimento. 
+
+
     ass. Francisco
 */
 
 
-// Importando as bibliotecas necessárias para o programa
+// Bibliotecas necessárias para o programa
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
 
+
+// Estrutura dos dados
 struct Registros{
-    char matricula[15];
-    char nome_discente[256];
-    char ano_ingresso[10];
-    char periodo_ingresso[5];
-    char tipo_discente[15];
-    char status_discente[10];
-    char nivel_ensino[15];
-    char nome_curso[256];
-    char modalidade_educacao[15];
-    char nome_unidade[256];
-    char nome_unidade_gestora[256];
+    char matricula[15];                 // ID do aluno
+    char nome_discente[256];            // Nome completo
+    char ano_ingresso[10];              // Ano de ingresso
+    char periodo_ingresso[5];           // Semestre de ingresso
+    char tipo_discente[15];             // Tipo (Regular, PROEJA, etc)
+    char status_discente[10];           // Ativo, Inativo, Egresso
+    char nivel_ensino[15];              // Nível de ensino (Graduação, Pós graduação, etc)
+    char nome_curso[256];               // Nome do curso
+    char modalidade_educacao[15];       // Modalidade (Presencial, EAD, etc)
+    char nome_unidade[256];             // Campus
+    char nome_unidade_gestora[256];     // Órgão responsável
 };
 
-void percorrer_linhas(FILE* inp, struct Registros* registros);
+
+// Procedimentos
+int percorrer_linhas(FILE* inp, struct Registros* registros);
+void salvar(FILE* out, struct Registros* registros, int qntd);
 void imprimir_discente(struct Registros* registros, int quantidade, long long int matricula);
-void salvar();
 
 
-
-//Função principal que executa os métodos de leitura e escrita dos dados
+// Procedimento principal que executa os métodos de leitura e escrita dos dados
 int main(int argc, char* argv[]){
     
     struct Registros* dados_alunos = (struct Registros*) malloc(sizeof(struct Registros) * 10000);
 
+
     FILE* input = fopen(argv[1], "r");
     FILE* output = fopen(argv[2], "w");
+
     char buffer[1024]; //Buffer global
 
+    int qntd;
+
     if(input == NULL || output == NULL){
-        printf("Erro, Arquivos insuficientes\n");
+        printf("Erro: Arquivos insuficientes\n");
         printf("Programa encerrado");
     }
     else{
         fgets(buffer, sizeof(buffer), input); //Começa a ler a partir da segunda linha em diante
-        percorrer_linhas(input, dados_alunos);
+
+        qntd = percorrer_linhas(input, dados_alunos);
+
+        printf("Total de alunos: %d\n", qntd);
         printf("%s", dados_alunos[642].nome_unidade);
+
+        salvar(output, dados_alunos, qntd);
+
         fclose(input);
+        fclose(output);
         free(dados_alunos);
     }
 
     return 0;
 }
 
-void percorrer_linhas(FILE* inp, struct Registros* registros){
+
+// procedimento responsável por 
+int percorrer_linhas(FILE* inp, struct Registros* registros){
     
     char word[1024];
     int qtd = 0;
@@ -150,30 +170,36 @@ void percorrer_linhas(FILE* inp, struct Registros* registros){
 
         qtd++;
     }
+
+    return qtd;
 }
 
-/*void imprimir_discente(struct Registros* registros, int quantidade, long long int matricula){
-    
-    função para imprimir os dados do discente no terminal,
-    caso a matricula não seja encontrada, a função deve gerar um erro.
-    
 
-    for(int i = 0; i < quantidade; i++){
-        if (registros[i].matricula){ 
-            printf("Discente: %s(%lld)\n", registros[i].nome_discente, registros[i].matricula);
-            printf("Periodo de ingresso: %d/%d\n", registros[i].ano_ingresso, registros[i].periodo_ingresso);
-            printf("Tipo de discente: %s\n", registros[i].tipo_discente);
-            printf("Status do discente: %s\n", registros[i].status_discente);
-            printf("Nivel de ensino: %s\n", registros[i].nivel_ensino);
-            printf("Curso: %s\n", registros[i].nome_curso);
+// Procedimento responsável por salvar os registros já formatados por pecorrer_linhas no arquivo txt
+void salvar(FILE* out, struct Registros* registros, int qntd){
+    fprintf(out, "Matricula, Nome, Ano de Ingresso, Periodo, Tipo, Status, Nivel, Curso, Modalidade, Unidade, Unidade Gestora\n");
 
-            return;
-        }
+    for(int i = 0; i < qntd; i++){
+        fprintf(out, "%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s\n",
+            registros[i].matricula,                        
+            registros[i].nome_discente,
+            registros[i].ano_ingresso,
+            registros[i].periodo_ingresso,
+            registros[i].tipo_discente,
+            registros[i].status_discente,
+            registros[i].nivel_ensino,
+            registros[i].nome_curso,
+            registros[i].modalidade_educacao,
+            registros[i].nome_unidade,
+            registros[i].nome_unidade_gestora
+        );
     }
-    printf("Erro: Matrícula não encontrada.\n");
 
-}*/
+    printf("Arquivo salvo com sucesso! Todal de registros: %d\n", qntd);
+}
 
-void salvar(){
-    
+
+// Procedimento para imprimir o discente desejado no terminal 
+void imprimir_discente(struct Registros* registros, int quantidade, long long int matricula){
+
 }
