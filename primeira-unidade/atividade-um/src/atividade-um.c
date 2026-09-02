@@ -87,7 +87,15 @@ int main(int argc, char* argv[]){
     printf("Total de alunos: %d\n", qntd);
 
     salvar(output, dados_alunos, qntd);
-    imprimir_discente(dados_alunos, qntd, "202600101451");
+
+    while(1){
+        char matricula[15];
+        printf("Digite a matrícula do discente: ");
+        scanf("%s", matricula);
+    
+        if(strcmp("..",matricula) == 0){break;}
+        imprimir_discente(dados_alunos, qntd, matricula);
+    }
 
     fclose(input);
     fclose(output);
