@@ -29,7 +29,7 @@
 #include <string.h>
 
 
-// Estrutura dos dados
+// Estrutura para armazenar informações de um discente
 struct Registros{
     char matricula[15];                 // ID do aluno
     char nome_discente[256];            // Nome completo
@@ -48,46 +48,56 @@ struct Registros{
 // Procedimentos
 int percorrer_linhas(FILE* inp, struct Registros* registros);
 void salvar(FILE* out, struct Registros* registros, int qntd);
-void imprimir_discente(struct Registros* registros, int quantidade, long long int matricula);
+void imprimir_discente(struct Registros* registros, int qntd, char* matricula);
 
 
 // Procedimento principal que executa os métodos de leitura e escrita dos dados
 int main(int argc, char* argv[]){
+
+    // Verifica se foi passado os argumentos corretamente
+    if(argc != 3){
+        printf("uso: %s <arquivo_input.csv> <arquivo_output.txt>\n", argv[0]);
+        printf("Exemplo: %s input/dis-csv-discentes-de-graduacao-de-2026.csv output/output.txt\n", argv[0]);
+
+        // encerra o código com erro
+        return 1;
+    }
     
+    // Aloca espaço em memória para armazenar os registros dos discentes
     struct Registros* dados_alunos = (struct Registros*) malloc(sizeof(struct Registros) * 10000);
 
-
+    // Abrindo os arquivos que foram passados como argumento para o programa
     FILE* input = fopen(argv[1], "r");
     FILE* output = fopen(argv[2], "w");
 
-    char buffer[1024]; //Buffer global
+    // Buffer global
+    char buffer[1024];
 
-    int qntd;
 
-    if(input == NULL || output == NULL){
-        printf("Erro: Arquivos insuficientes\n");
+    if(fgets(buffer, sizeof(buffer), input) == NULL){
+        printf("Erro ao ler cabeçalho do arquivo .csv passado como argumento\n");
         printf("Programa encerrado");
+
+        return 1;
     }
-    else{
-        fgets(buffer, sizeof(buffer), input); //Começa a ler a partir da segunda linha em diante
 
-        qntd = percorrer_linhas(input, dados_alunos);
+    // Carrega os dados do arquivo .csv na memória
+    int qntd = percorrer_linhas(input, dados_alunos);
 
-        printf("Total de alunos: %d\n", qntd);
-        printf("%s", dados_alunos[642].nome_unidade);
+    printf("Total de alunos: %d\n", qntd);
 
-        salvar(output, dados_alunos, qntd);
+    salvar(output, dados_alunos, qntd);
+    imprimir_discente(dados_alunos, qntd, "202600101451");
 
-        fclose(input);
-        fclose(output);
-        free(dados_alunos);
-    }
+    fclose(input);
+    fclose(output);
+    free(dados_alunos);
 
     return 0;
 }
 
 
-// procedimento responsável por 
+// procedimento responsável pelo parsing do arquivo csv
 int percorrer_linhas(FILE* inp, struct Registros* registros){
     
     char word[1024];
@@ -110,7 +120,7 @@ int percorrer_linhas(FILE* inp, struct Registros* registros){
         }
 
         //Trata campos vazios
-        for(int i = 0; i < strlen(word) - 1; i++)
+        for(int i = 0; i < (int)strlen(word) - 1; i++)
         {
             if(word[i] == ',' && word[i + 1] == ',')
             {
@@ -195,11 +205,28 @@ void salvar(FILE* out, struct Registros* registros, int qntd){
         );
     }
 
-    printf("Arquivo salvo com sucesso! Todal de registros: %d\n", qntd);
+    printf("Arquivo salvo com sucesso! Total de registros: %d\n", qntd);
 }
 
 
 // Procedimento para imprimir o discente desejado no terminal 
-void imprimir_discente(struct Registros* registros, int quantidade, long long int matricula){
-
+void imprimir_discente(struct Registros* registros, int qntd, char* matricula){
+    for(int i = 0; i < qntd; i++){
+        if(strcmp(registros[i].matricula, matricula) == 0){
+            printf("\nDADOS DO DISCENTE:\n");
+            printf("Matrícula:           %s\n", registros[i].matricula);
+            printf("Nome:                %s\n", registros[i].nome_discente);
+            printf("Ano de ingresso:     %s\n", registros[i].ano_ingresso);
+            printf("Período de ingresso: %s\n", registros[i].periodo_ingresso);
+            printf("Tipo:                %s\n", registros[i].tipo_discente);
+            printf("Status:              %s\n", registros[i].status_discente);
+            printf("Nível de ensino:     %s\n", registros[i].nivel_ensino);
+            printf("Curso:               %s\n", registros[i].nome_curso);
+            printf("Modalidade:          %s\n", registros[i].modalidade_educacao);
+            printf("Unidade:             %s\n", registros[i].nome_unidade);
+            printf("Unidade gestora:     %s\n\n", registros[i].nome_unidade_gestora);
+            return;
+        }
+    }
+    printf("\nDiscente não encontrado ou não existe\n");
 }
