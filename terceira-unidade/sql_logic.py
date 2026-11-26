@@ -1,5 +1,6 @@
 import psycopg2 
 
+# Example
 conn = psycopg2.connect(
     host="localhost",
     port=5432,
