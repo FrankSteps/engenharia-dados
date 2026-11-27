@@ -1,16 +1,26 @@
-import psycopg2 
+from psycopg2 import *
+from dotenv import load_dotenv
+import os
 
-# Example
-conn = psycopg2.connect(
-    host="localhost",
-    port=5432,
-    database="Funcionarios",
-    user="postgres",
-    password=""
-)
+load_dotenv()
 
-with conn.cursor() as cur:
-    cur.execute("SELECT current_database(), version();")
-    print("Conectado ao banco:", cur.fetchone())
+class CRUDlogic:
 
-conn.close()
+    def __init__():
+        pass
+
+    def connect_bd(self):
+        try:
+            pwd = os.getenv("DB_PASSWORD")
+
+            self.conecta = connect(
+                host="localhost",
+                password=pwd,
+                database="Trab_final",
+                port="5432",
+                user="postgres"
+                )
+        except:
+            print("Erro ao reconhecer banco de dados")
+        else:
+            print("Database reconhecido com sucesso")
