@@ -41,7 +41,7 @@ class mainInterface:
 
         # Label para a imagem
         self.imgLabel = Label(self.mainFrame, image=self.logo)
-        self.imgLabel.pack(side='top', fill="x", pady=(110,0))
+        self.imgLabel.pack(side='top', fill="x", pady=(200,0))
 
         # Botões
         self.buttonSQL = Button(self.mainFrame, text='SQL', height=4, command=lambda: self.postgre_win(interSQL), width=30)
