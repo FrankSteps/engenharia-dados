@@ -1,0 +1,5 @@
+DB_PASSWORD= password_database 
+HOST= host_server
+DATABASE= database_name
+PORT= port_server
+USER= user_name

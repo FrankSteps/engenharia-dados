@@ -16,13 +16,16 @@ class ConectaPostgre:
         try:
             pwd = os.getenv("DB_PASSWORD")
             host = os.getenv("HOST")
+            db = os.getenv("DATABASE")
+            port = os.getenv("PORT")
+            user = os.getenv("USER")
 
             self.conecta = connect(
                 host=host,
                 password=pwd,
-                database="Trab_final",
-                port="5432",
-                user="postgres"
+                database=db,
+                port=port,
+                user=user
                 )
         
         except Error as e:
